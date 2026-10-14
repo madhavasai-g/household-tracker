@@ -80,7 +80,11 @@
   }
 
   function renderGoldView() {
-    document.getElementById("spotRateInput").value = state.spot24k;
+    var inputEl = document.getElementById("spotRateInput");
+    if (inputEl && document.activeElement !== inputEl) {
+      inputEl.value = state.spot24k;
+    }
+
     var allComputed = state.deals.map(computeDeal);
 
     renderStorePills(allComputed);
@@ -199,8 +203,11 @@
   }
 
   document.getElementById("spotRateInput").addEventListener("input", function (e) {
-    state.spot24k = parseFloat(e.target.value) || 14874;
-    renderGoldView();
+    var val = parseFloat(e.target.value);
+    if (!isNaN(val) && val > 1000) {
+      state.spot24k = val;
+      renderGoldView();
+    }
   });
 
   document.addEventListener("click", function (e) {
