@@ -1,6 +1,6 @@
 {
   "spot24k": 14874,
-  "updatedAt": "15 Oct, 01:32 am IST",
+  "updatedAt": "15 Oct, 01:38 am IST",
   "deals": [
     {
       "id": 1,
@@ -10,10 +10,10 @@
       "weight": 1,
       "purity": 999,
       "listPrice": 16784,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "with SBI / Axis Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:32 am IST",
+      "updatedAt": "15 Oct, 01:38 am IST",
       "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-999-Purity-Goddess-Lakshmi-Gold-Coin-1-g/22810320/buy"
     },
     {
@@ -24,11 +24,11 @@
       "weight": 1,
       "purity": 995,
       "listPrice": 16285,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "with SBI credit card",
       "bankDisc": 0,
       "convFee": 69,
-      "updatedAt": "15 Oct, 01:32 am IST",
-      "directUrl": "https://www.amazon.in/s?k=P.N.+Gadgil+Jewellers+1+g+Vedhani+Gold+Ring+24K+995"
+      "updatedAt": "15 Oct, 01:38 am IST",
+      "directUrl": "https://www.amazon.in/dp/B09V52M1KX"
     },
     {
       "id": 3,
@@ -38,10 +38,10 @@
       "weight": 1.5,
       "purity": 999.9,
       "listPrice": 24350,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "Instant Bank Card Offer at Payment",
       "bankDisc": 0,
       "convFee": 29,
-      "updatedAt": "15 Oct, 01:32 am IST",
+      "updatedAt": "15 Oct, 01:38 am IST",
       "directUrl": "https://www.ajio.com/mmtc-pamp-1-5-gm-24k-999-9-gold-coin/p/6005363170_multi"
     },
     {
@@ -52,10 +52,10 @@
       "weight": 2,
       "purity": 999.9,
       "listPrice": 32900,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "with Flipkart Axis / SBI Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:32 am IST",
+      "updatedAt": "15 Oct, 01:38 am IST",
       "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-9999-Purity-Gold-Bar--2-g/22810430/buy"
     },
     {
@@ -66,11 +66,11 @@
       "weight": 3,
       "purity": 999,
       "listPrice": 48900,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "with SBI credit card",
       "bankDisc": 0,
       "convFee": 69,
-      "updatedAt": "15 Oct, 01:32 am IST",
-      "directUrl": "https://www.amazon.in/s?k=Joyalukkas+3g+24k+gold+coin"
+      "updatedAt": "15 Oct, 01:38 am IST",
+      "directUrl": "https://www.amazon.in/dp/B08L5V9X1Z"
     },
     {
       "id": 6,
@@ -80,10 +80,10 @@
       "weight": 5,
       "purity": 999,
       "listPrice": 78401,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "Instant Bank Card Offer at Payment",
       "bankDisc": 0,
       "convFee": 29,
-      "updatedAt": "15 Oct, 01:32 am IST",
+      "updatedAt": "15 Oct, 01:38 am IST",
       "directUrl": "https://www.ajio.com/muthoot-pappachan-5-gm-24k-999-yellow-gold-pappachan-swarnavarsham-coin/p/600724681"
     },
     {
@@ -94,10 +94,10 @@
       "weight": 8,
       "purity": 999,
       "listPrice": 131200,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "with Flipkart Axis / SBI Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:32 am IST",
+      "updatedAt": "15 Oct, 01:38 am IST",
       "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-999-Purity-Gold-Coin--8-g/22810324/buy"
     },
     {
@@ -108,10 +108,10 @@
       "weight": 10,
       "purity": 999,
       "listPrice": 163500,
-      "bankOfferText": "No active bank discount listed",
+      "bankOfferText": "with Flipkart Axis / SBI Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:32 am IST",
+      "updatedAt": "15 Oct, 01:38 am IST",
       "directUrl": "https://www.myntra.com/gold-coin/candere+a+kalyan+jewellers+company/candere-a-kalyan-jewellers-company-24kt-gold-coin---10-g/38648667/buy"
     }
   ]
