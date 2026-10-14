@@ -1,0 +1,33 @@
+name: Auto-Update Gold & Grocery Deals
+
+on:
+  schedule:
+    - cron: '0 */2 * * *' # Runs automatically every 2 hours
+  workflow_dispatch:      # Lets you trigger a live run anytime with 1 click
+
+permissions:
+  contents: write
+
+jobs:
+  scrape-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Gold & Grocery Deal Updater
+        run: python scraper.py
+
+      - name: Commit Updated deals.json
+        run: |
+          git config user.name "GoldDeals AutoBot"
+          git config user.email "actions@github.com"
+          git add deals.json
+          git diff --staged --quiet || git commit -m "Auto-update live gold deals"
+          git push
+          
