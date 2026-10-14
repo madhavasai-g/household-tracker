@@ -146,6 +146,10 @@
         compareTag = '<span class="worse-badge">💡 ' + fmt(extraCost) + ' cheaper on ' + cheapestForWeight.store + '</span>';
       }
 
+      var bankRow = r.bankDisc > 0
+        ? '<div class="pb-row"><span class="pb-bank">💳 ' + r.bankOfferText + '</span><span class="pb-bank">-' + fmt(r.bankDisc) + '</span></div>'
+        : '';
+
       var convRow = r.convFee > 0
         ? '<div class="pb-row"><span class="pb-fee">🧾 Conv fee</span><span class="pb-fee">+' + fmt(r.convFee) + '</span></div>'
         : '';
@@ -164,7 +168,7 @@
         '<td class="purity-cell">24K ·<br>' + r.purity + '</td>' +
         '<td class="price-breakdown">' +
           '<div class="pb-row"><span class="pb-label">🏷️ Price</span><span class="pb-strike">' + fmt(r.listPrice) + '</span></div>' +
-          '<div class="pb-row"><span class="pb-bank">💳 ' + r.bankOfferText + '</span><span class="pb-bank">-' + fmt(r.bankDisc) + '</span></div>' +
+          bankRow +
           convRow +
           '<div class="pb-total-row"><span class="pb-you-pay">You pay</span><span class="pb-final-amt">' + fmt(r.youPay) + '</span></div>' +
           '<div class="pb-timestamp">Price as of ' + r.updatedAt + '</div>' +
