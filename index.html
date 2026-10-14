@@ -1,658 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>GoldDeal.in Replica & Household Smart Tracker</title>
-  <style>
-    :root {
-      --bg-main: #07090e;
-      --bg-card: #111622;
-      --gold-primary: #f5b041;
-      --gold-bright: #ffd700;
-      --gold-grad: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);
-      --gold-glow: rgba(245, 158, 11, 0.25);
-      --green: #10b981;
-      --green-bg: rgba(16, 185, 129, 0.14);
-      --amber: #f59e0b;
-      --amber-bg: rgba(245, 158, 11, 0.14);
-      --red: #ef4444;
-      --red-bg: rgba(239, 68, 68, 0.14);
-      --text-light: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-gold: rgba(245, 158, 11, 0.35);
-      --radius: 16px;
-    }
-
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif; }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg-main);
-      color: var(--text-light);
-      background-image:
-        radial-gradient(circle at 15% 0%, rgba(245, 158, 11, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 85% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 45%);
-      min-height: 100vh;
-      padding-bottom: 60px;
-    }
-
-    /* LIVE SPOT RATE TICKER BAR */
-    .spot-ticker {
-      background: #0b0f19;
-      border-bottom: 1px solid var(--border-gold);
-      padding: 10px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-    }
-    .ticker-inner {
-      max-width: 1080px;
-      margin: 0 auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-    .live-indicator {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--gold-bright);
-    }
-    .pulse-dot {
-      width: 9px;
-      height: 9px;
-      background: var(--green);
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-      animation: livePulse 1.8s infinite;
-    }
-    @keyframes livePulse {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    .ticker-rates {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-    }
-    .rate-pill {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      padding: 5px 10px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .rate-input {
-      width: 68px;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border-gold);
-      color: var(--gold-bright);
-      font-weight: 800;
-      font-size: 13px;
-      padding: 3px 6px;
-      border-radius: 6px;
-      text-align: center;
-    }
-    .sync-btn {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: var(--green);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    /* MAIN CONTAINER & NAVBAR */
-    .container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-    .navbar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-      background: var(--bg-card);
-      padding: 16px 20px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .brand-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: var(--gold-grad);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      box-shadow: 0 4px 15px var(--gold-glow);
-    }
-    .brand-title {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      background: linear-gradient(90deg, #fff, #fbbf24);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .brand-sub {
-      margin: 2px 0 0 0;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 8px;
-      width: 100%;
-      max-width: 420px;
-    }
-    .mode-btn {
-      flex: 1;
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-muted);
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-    .mode-btn.active {
-      background: var(--gold-grad);
-      color: #090d16;
-      border-color: transparent;
-      box-shadow: 0 4px 15px var(--gold-glow);
-    }
-
-    /* GLOBAL WALLET & CARD SETTINGS BAR */
-    .stack-config-bar {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(17, 22, 34, 0.9));
-      border: 1px solid var(--border-gold);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 18px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
-      align-items: center;
-    }
-    .config-item {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .config-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-      color: #e2e8f0;
-    }
-    .config-label span:last-child {
-      color: var(--gold-bright);
-    }
-    input[type="range"] {
-      width: 100%;
-      accent-color: #f59e0b;
-      height: 6px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    /* FILTER PILLS */
-    .controls-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .filter-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .f-pill {
-      padding: 7px 13px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--text-muted);
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .f-pill.active {
-      background: rgba(245, 158, 11, 0.18);
-      color: var(--gold-bright);
-      border-color: var(--gold-primary);
-    }
-
-    .btn-gold {
-      background: var(--gold-grad);
-      color: #090d16;
-      border: none;
-      padding: 9px 16px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 12px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px var(--gold-glow);
-    }
-
-    /* GOLDDEAL.IN DEAL CARDS GRID */
-    .deals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 16px;
-    }
-    .deal-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.25s ease, border-color 0.25s ease;
-    }
-    .deal-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-gold);
-    }
-    .deal-card.loot-card {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, var(--bg-card) 35%);
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .store-tag {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.06);
-      color: #e2e8f0;
-    }
-    .spread-badge {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 800;
-    }
-    .spread-loot { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.35); }
-    .spread-fair { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.35); }
-    .spread-high { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.35); }
-
-    .coin-title {
-      margin: 0 0 6px 0;
-      font-size: 16px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.35;
-    }
-    .coin-meta {
-      display: flex;
-      gap: 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
-    .meta-chip {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .price-box {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-    .price-row-main {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 8px;
-    }
-    .effective-gram {
-      font-size: 22px;
-      font-weight: 900;
-      color: var(--gold-bright);
-    }
-    .effective-gram small {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    .strike-price {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-decoration: line-through;
-    }
-
-    .stack-breakdown {
-      border-top: 1px dashed var(--border);
-      padding-top: 8px;
-      font-size: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      color: #cbd5e1;
-    }
-    .sb-line { display: flex; justify-content: space-between; }
-    .sb-line.net-line { color: var(--green); font-weight: 800; font-size: 13px; margin-top: 2px; }
-
-    .card-footer { display: flex; gap: 8px; align-items: center; }
-    .coupon-btn {
-      flex: 1;
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px dashed var(--gold-primary);
-      color: var(--gold-bright);
-      padding: 9px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .buy-link {
-      flex: 1;
-      background: var(--gold-grad);
-      color: #090d16;
-      text-decoration: none;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    /* MODAL */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 200;
-    }
-    .modal-card {
-      background: #131926;
-      border: 1px solid var(--border-gold);
-      border-radius: 18px;
-      max-width: 440px;
-      width: 100%;
-      padding: 20px;
-    }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
-    .form-input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: #090d16;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    /* GROCERY SPLITTER */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    .kpi-box, .grocery-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .store-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .store-cell {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border);
-      padding: 8px 4px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 11px;
-    }
-    .store-cell.best {
-      background: var(--green-bg);
-      border-color: var(--green);
-      color: var(--green);
-      font-weight: 800;
-    }
-    .qty-btn {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, 0.06);
-      color: #fff;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .hidden { display: none !important; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoldDeal India & Smart Grocery Hub</title>
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
-  <!-- TOP LIVE BULLION SPOT BAR -->
-  <div class="spot-ticker">
-    <div class="ticker-inner">
-      <div class="live-indicator">
-        <span class="pulse-dot"></span>
-        <span id="apiStatusText">SYNCING LIVE SPOT GOLD...</span>
+  <!-- TOP LIVE BULLION BAR -->
+  <div class="spot-bar">
+    <div class="spot-inner">
+      <div class="status-group">
+        <span class="pulse-dot" id="statusDot"></span>
+        <span id="jsStatusText">LOADING JS...</span>
       </div>
-      <div class="ticker-rates">
-        <div class="rate-pill">
-          <span>24K (999) Spot/g: ₹</span>
-          <input type="number" id="spot24Input" class="rate-input" value="7800" step="10" />
+      <div class="spot-controls">
+        <label class="spot-pill">
+          <span>24K Spot/g: ₹</span>
+          <input type="number" id="spot24Input" value="7800" step="10">
+        </label>
+        <div class="spot-pill">
+          <span>22K:</span>
+          <strong id="spot22Text">₹7,145</strong>
         </div>
-        <div class="rate-pill">
-          <span>22K (916):</span>
-          <strong id="spot22Display" style="color: var(--gold-bright);">₹7,145</strong>
-        </div>
-        <div class="rate-pill">
-          <span>Showroom (+6.09%):</span>
-          <strong id="showroomDisplay" style="color: #94a3b8;">₹8,275/g</strong>
-        </div>
-        <button class="sync-btn" id="syncSpotBtn">🔄 Sync Live Rate</button>
+        <button type="button" class="sync-btn" id="btnSyncRate">🔄 Sync Live Rate</button>
       </div>
     </div>
   </div>
 
   <div class="container">
-    <header class="navbar">
-      <div class="brand">
-        <div class="brand-icon">🪙</div>
+    <!-- HEADER & MAIN TABS -->
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="logo-box">🪙</div>
         <div>
-          <h1 class="brand-title">GoldDeal India</h1>
-          <p class="brand-sub">Auto-Synced 24K Bullion Deals, Voucher Stacker & Smart Grocery Cart</p>
+          <h1>GoldDeal India Hub</h1>
+          <p>Live 24K Bullion Stacker & Household Grocery Splitter</p>
         </div>
       </div>
-      <div class="nav-actions">
-        <button class="mode-btn active" data-tab="gold">🪙 Live Gold Deals</button>
-        <button class="mode-btn" data-tab="grocery">🛒 Grocery Cart Splitter</button>
+      <div class="main-tabs">
+        <button type="button" class="tab-btn active" id="tabBtnGold">🪙 Live Gold Deals</button>
+        <button type="button" class="tab-btn" id="tabBtnGrocery">🛒 Grocery Splitter</button>
       </div>
     </header>
 
-    <!-- TAB 1: GOLDDEAL.IN REPLICA -->
-    <div id="tabGold">
-      <div class="stack-config-bar">
-        <div class="config-item">
-          <div class="config-label">
+    <!-- TAB 1: GOLD DEALS VIEW -->
+    <section id="viewGold">
+      <div class="config-panel">
+        <div class="slider-col">
+          <div class="slider-label">
             <span>🎁 Gift Voucher Discount (GyFTR / Dealzy / Cred)</span>
-            <span id="lblGvDisc">5.0%</span>
+            <strong id="valGv">5.0%</strong>
           </div>
-          <input type="range" id="rngGvDisc" min="0" max="10" step="0.5" value="5.0" />
+          <input type="range" id="sliderGv" min="0" max="10" step="0.5" value="5.0">
         </div>
-        <div class="config-item">
-          <div class="config-label">
+        <div class="slider-col">
+          <div class="slider-label">
             <span>💳 Credit Card Cashback (SBI Cashback / ICICI)</span>
-            <span id="lblCcDisc">5.0%</span>
+            <strong id="valCc">5.0%</strong>
           </div>
-          <input type="range" id="rngCcDisc" min="0" max="10" step="0.5" value="5.0" />
+          <input type="range" id="sliderCc" min="0" max="10" step="0.5" value="5.0">
         </div>
-        <div class="config-item" style="text-align: right;">
-          <button class="btn-gold" id="openModalBtn">+ Test / Add Custom Gold Deal</button>
-        </div>
-      </div>
-
-      <div class="controls-row">
-        <div class="filter-pills" id="dealFilters">
-          <button class="f-pill active" data-filter="all">All Live Deals</button>
-          <button class="f-pill" data-filter="loot">🔥 Below Spot Loot</button>
-          <button class="f-pill" data-filter="Myntra">Myntra</button>
-          <button class="f-pill" data-filter="Ajio">Ajio</button>
-          <button class="f-pill" data-filter="Amazon">Amazon</button>
-          <button class="f-pill" data-filter="Flipkart">Flipkart</button>
-          <button class="f-pill" data-filter="1g">1g</button>
-          <button class="f-pill" data-filter="2g">2g</button>
-          <button class="f-pill" data-filter="5g">5g</button>
-          <button class="f-pill" data-filter="10g">10g</button>
+        <div class="action-col">
+          <button type="button" class="gold-btn" id="btnOpenModal">+ Test / Add Deal</button>
         </div>
       </div>
 
-      <div class="deals-grid" id="dealsGrid"></div>
-    </div>
+      <div class="filter-bar" id="filterContainer">
+        <button type="button" class="chip active" data-filter="all">All Deals</button>
+        <button type="button" class="chip" data-filter="loot">🔥 Below Spot</button>
+        <button type="button" class="chip" data-filter="Myntra">Myntra</button>
+        <button type="button" class="chip" data-filter="Ajio">Ajio</button>
+        <button type="button" class="chip" data-filter="Amazon">Amazon</button>
+        <button type="button" class="chip" data-filter="Flipkart">Flipkart</button>
+        <button type="button" class="chip" data-filter="1g">1g</button>
+        <button type="button" class="chip" data-filter="2g">2g</button>
+        <button type="button" class="chip" data-filter="5g">5g</button>
+      </div>
 
-    <!-- TAB 2: GROCERY SPLITTER -->
-    <div id="tabGrocery" class="hidden">
-      <div class="kpi-grid">
+      <div class="deals-grid" id="dealsContainer"></div>
+    </section>
+
+    <!-- TAB 2: GROCERY SPLITTER VIEW -->
+    <section id="viewGrocery" class="hidden">
+      <div class="kpi-row">
         <div class="kpi-box">
-          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">SMART SPLIT CART TOTAL</div>
-          <div id="grocSplitVal" style="font-size: 24px; font-weight: 900; color: var(--green); margin-top: 6px;">₹0</div>
-          <div style="font-size: 12px; color: var(--text-muted);">Cheapest store per item</div>
+          <span class="kpi-title">SMART SPLIT CART</span>
+          <strong class="kpi-num green" id="grocBestSum">₹0</strong>
+          <span class="kpi-sub">Cheapest store per item</span>
         </div>
         <div class="kpi-box">
-          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">QUICK-COMMERCE SINGLE CART</div>
-          <div id="grocQuickVal" style="font-size: 24px; font-weight: 900; color: var(--red); margin-top: 6px;">₹0</div>
-          <div style="font-size: 12px; color: var(--text-muted);">Blinkit / Zepto average</div>
+          <span class="kpi-title">SINGLE APP CART</span>
+          <strong class="kpi-num red" id="grocQuickSum">₹0</strong>
+          <span class="kpi-sub">Quick-commerce average</span>
         </div>
         <div class="kpi-box">
-          <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">MONTHLY HOUSEHOLD SAVINGS</div>
-          <div id="grocSaveVal" style="font-size: 24px; font-weight: 900; color: var(--gold-bright); margin-top: 6px;">₹0</div>
-          <div style="font-size: 12px; color: var(--text-muted);">Auto-saved on your phone</div>
+          <span class="kpi-title">MONTHLY SAVINGS</span>
+          <strong class="kpi-num gold" id="grocSavedSum">₹0</strong>
+          <span class="kpi-sub">Saved every month</span>
         </div>
       </div>
-      <div id="groceryList"></div>
-    </div>
+
+      <div class="add-item-box">
+        <h3>➕ Add Custom Household Item</h3>
+        <div class="form-row">
+          <input type="text" id="inpGrocName" placeholder="Item Name (e.g. Basmati Rice 5kg)">
+          <input type="number" id="inpGrocQty" value="1" min="1" placeholder="Qty">
+        </div>
+        <div class="form-row four-col">
+          <input type="number" id="inpDMart" placeholder="DMart ₹">
+          <input type="number" id="inpJio" placeholder="JioMart ₹">
+          <input type="number" id="inpBB" placeholder="BigBasket ₹">
+          <input type="number" id="inpBlinkit" placeholder="Blinkit ₹">
+        </div>
+        <button type="button" class="gold-btn full-w" id="btnAddGrocery">Add to My Grocery Watchlist</button>
+      </div>
+
+      <div id="groceryContainer"></div>
+    </section>
   </div>
 
-  <!-- MODAL FOR ADDING / TESTING A LIVE DEAL -->
-  <div class="modal-backdrop hidden" id="dealModal">
-    <div class="modal-card">
-      <h3 style="margin: 0 0 14px 0; color: var(--gold-bright);">Test or Add a Live Gold Coin Deal</h3>
-      <div class="form-group">
-        <label>Coin Brand & Title</label>
-        <input type="text" id="mTitle" class="form-input" placeholder="e.g., Malabar 24K (999) Gold Coin" />
+  <!-- MODAL FOR CUSTOM GOLD DEAL -->
+  <div class="modal-overlay hidden" id="modalDeal">
+    <div class="modal-box">
+      <h3>Test or Add a Live Gold Coin Deal</h3>
+      <input type="text" id="mCoinName" placeholder="Brand (e.g. Malabar 24K Coin)">
+      <div class="form-row">
+        <select id="mPlatform">
+          <option value="Myntra">Myntra</option>
+          <option value="Ajio">Ajio</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Flipkart">Flipkart</option>
+        </select>
+        <input type="number" id="mWeight" value="2" step="0.5" placeholder="Grams">
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div class="form-group">
-          <label>Platform</label>
-          <select id="mStore" class="form-input">
-            <option value="Myntra">Myntra</option>
-            <option value="Ajio">Ajio</option>
-            <option value="Amazon">Amazon</option>
-            <option value="Flipkart">Flipkart</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Weight (Grams)</label>
-          <input type="number" id="mWeight" class="form-input" value="2" step="0.5" />
-        </div>
+      <div class="form-row">
+        <input type="number" id="mPrice" placeholder="App Listed Price ₹">
+        <input type="number" id="mCouponPct" value="6" step="0.5" placeholder="Coupon %">
       </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <div class="form-group">
-          <label>App Selling Price (₹)</label>
-          <input type="number" id="mPrice" class="form-input" placeholder="16900" />
-        </div>
-        <div class="form-group">
-          <label>App Coupon Discount (%)</label>
-          <input type="number" id="mCouponPct" class="form-input" value="6" step="0.5" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Coupon Code Name</label>
-        <input type="text" id="mCode" class="form-input" value="BLINKDEAL" />
-      </div>
-      <div style="display: flex; gap: 10px; margin-top: 16px;">
-        <button class="btn-gold" id="saveDealBtn" style="flex: 1;">Add to Live Feed</button>
-        <button class="f-pill" id="closeModalBtn" style="flex: 1;">Cancel</button>
+      <input type="text" id="mCode" value="BLINKDEAL" placeholder="Coupon Code">
+      <div class="form-row">
+        <button type="button" class="gold-btn" id="btnSaveDeal">Save Deal</button>
+        <button type="button" class="chip" id="btnCloseModal">Cancel</button>
       </div>
     </div>
   </div>
 
-  <script>
-    // 1. FREE PUBLIC GOLD API FETCHER (NO API KEY NEEDED)
-    const TROY_OUNCE_GRAMS = 31.1034768;
-    const INDIA_DUTY_FACTOR = 1.075; // 6% Customs Duty + 1.5% Indian MCX/Bullion Bank Premium
-
-    async function fetchLiveSpotGold() {
-      const statusEl = document.getElementById("apiStatusText");
-      const inputEl = document.getElementById("spot24Input");
-      statusEl.innerText = "FETCHING LIVE XAU & INR...";
-
-      try {
-        // Primary: Live XAU/USD from gold-api.com + Live USD/INR from open.er-api.com
-        const [goldRes, fxRes] = await Promise.all([
-          fetch("https://api.gold-api.com/price/XAU"),
-          fetch("https://open.er-api.com/v6/latest/USD")
-        ]);
-
-        if (!goldRes.ok || !fxRes.ok) throw new Error("Primary API unavailable");
-
-        const goldData = await goldRes.json();
-        const fxData = await fxRes.json();
-
-        const xauUs
+  <script src="app.js?v=3"></script>
+</body>
+</html>
