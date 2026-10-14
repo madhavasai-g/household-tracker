@@ -1,7 +1,7 @@
 (function () {
   var state = {
     spot24k: 14874,
-    weight: "1",
+    weight: "all",
     store: "all",
     brand: "all",
     purity: "all",
@@ -47,7 +47,7 @@
 
     for (var i = 0; i < allComputed.length; i++) {
       var r = allComputed[i];
-      if (state.weight !== "all" && String(r.weight) !== String(state.weight)) continue;
+      if (state.weight !== "all" && Number(r.weight) !== Number(state.weight)) continue;
       if (!stats[r.store]) stats[r.store] = { count: 0, best: Infinity };
       stats[r.store].count += 1;
       if (r.perGram24k < stats[r.store].best) stats[r.store].best = r.perGram24k;
@@ -80,14 +80,14 @@
   }
 
   function renderGoldView() {
-    document.getElementById("liveSpotDisplay").textContent = fmt(state.spot24k);
+    document.getElementById("spotRateInput").value = state.spot24k;
     var allComputed = state.deals.map(computeDeal);
 
     renderStorePills(allComputed);
     renderActiveChips();
 
     var filtered = allComputed.filter(function (r) {
-      if (state.weight !== "all" && String(r.weight) !== String(state.weight)) return false;
+      if (state.weight !== "all" && Number(r.weight) !== Number(state.weight)) return false;
       if (state.store !== "all" && r.store !== state.store) return false;
       if (state.brand !== "all" && r.brand !== state.brand) return false;
       if (state.purity !== "all" && String(r.purity) !== String(state.purity)) return false;
@@ -186,10 +186,18 @@
         var data = await res.json();
         state.spot24k = data.spot24k || 14874;
         state.deals = data.deals || [];
+        document.getElementById("lastSyncText").textContent = "Updated " + (data.updatedAt || "just now");
       }
-    } catch (err) {}
+    } catch (err) {
+      document.getElementById("lastSyncText").textContent = "Updated locally";
+    }
     renderGoldView();
   }
+
+  document.getElementById("spotRateInput").addEventListener("input", function (e) {
+    state.spot24k = parseFloat(e.target.value) || 14874;
+    renderGoldView();
+  });
 
   document.addEventListener("click", function (e) {
     if (e.target.id === "tabGoldBtn") {
@@ -220,6 +228,18 @@
     var sBtn = e.target.closest("#storePills .gd-pill");
     if (sBtn) {
       state.store = sBtn.getAttribute("data-store");
+      renderGoldView();
+      return;
+    }
+
+    var chip = e.target.closest("[data-chip]");
+    if (chip) {
+      var k = chip.getAttribute("data-chip");
+      if (k === "weight") state.weight = "all";
+      if (k === "store") state.store = "all";
+      if (k === "brand") { state.brand = "all"; document.getElementById("brandSelect").value = "all"; }
+      if (k === "purity") { state.purity = "all"; document.getElementById("puritySelect").value = "all"; }
+      if (k === "under") { state.underSpotOnly = false; document.getElementById("underSpotToggle").checked = false; }
       renderGoldView();
       return;
     }
