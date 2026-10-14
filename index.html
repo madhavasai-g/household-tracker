@@ -3,57 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GoldDeals Pro — Automated 24K Bullion & Grocery Intelligence</title>
-  <link rel="stylesheet" href="style.css?v=10">
+  <title>GoldDeals Pro — Automated 24K Bullion Intelligence</title>
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 
-  <!-- TOP HEADER -->
+  <!-- TOP HEADER (EXACT GOLDDEALS BETA REPLICA) -->
   <header class="gd-header">
     <div class="gd-header-left">
       <div class="gd-coin-logo"></div>
       <span class="gd-brand-name">GoldDeals</span>
-      <span class="gd-beta-badge">PRO AUTO</span>
+      <span class="gd-beta-badge">BETA PRO</span>
       <div class="gd-mode-switch">
-        <button type="button" class="mode-tab active" id="tabGoldBtn">🪙 Auto Gold Tracker</button>
-        <button type="button" class="mode-tab" id="tabGrocBtn">🛒 Auto Grocery Splitter</button>
+        <button type="button" class="mode-tab active" id="tabGoldBtn">Gold Deals</button>
+        <button type="button" class="mode-tab" id="tabGrocBtn">🛒 Grocery Splitter</button>
       </div>
     </div>
     <div class="gd-header-right">
       <span class="gd-rate-label">Today's gold rate · 24K</span>
-      <span class="gd-rate-val" id="liveSpotDisplay">₹14,874</span>
+      <span class="gd-rate-val">₹<input type="number" id="spotRateInput" value="14874" step="10"></span>
       <span class="gd-rate-sub">/ g at 24K purity</span>
-      <span class="gd-updated" id="lastSyncBadge">● Auto-Synced</span>
+      <span class="gd-updated" id="lastSyncText">Updated just now</span>
     </div>
   </header>
 
-  <!-- ================= VIEW 1: AUTOMATED GOLD TRACKER ================= -->
+  <!-- ================= VIEW 1: GOLDDEALS REPLICA ================= -->
   <main id="goldView" class="gd-main">
-
-    <!-- FILTER ROWS (EXACT GOLDDEALS REPLICA + AUTO CONTROLS) -->
     <section class="gd-filters">
+      <!-- WEIGHT ROW WITH FRACTIONAL WEIGHT SUPPORT (1.5g, 2.5g, 3g, etc.) -->
       <div class="filter-row">
         <span class="filter-label">WEIGHT</span>
         <div class="pill-list" id="weightPills">
-          <button type="button" class="gd-pill" data-weight="all">All weights</button>
-          <button type="button" class="gd-pill active" data-weight="1">1 g</button>
+          <button type="button" class="gd-pill active" data-weight="all">All</button>
+          <button type="button" class="gd-pill" data-weight="1">1 g</button>
+          <button type="button" class="gd-pill" data-weight="1.5">1.5 g</button>
           <button type="button" class="gd-pill" data-weight="2">2 g</button>
+          <button type="button" class="gd-pill" data-weight="2.5">2.5 g</button>
           <button type="button" class="gd-pill" data-weight="3">3 g</button>
+          <button type="button" class="gd-pill" data-weight="4">4 g</button>
           <button type="button" class="gd-pill" data-weight="5">5 g</button>
           <button type="button" class="gd-pill" data-weight="8">8 g</button>
           <button type="button" class="gd-pill" data-weight="10">10 g</button>
         </div>
       </div>
 
+      <!-- STORE ROW -->
       <div class="filter-row">
         <span class="filter-label">STORE</span>
         <div class="pill-list" id="storePills"></div>
       </div>
 
+      <!-- SECONDARY CONTROLS -->
       <div class="filter-row secondary-bar">
         <div class="pill-list">
           <select id="brandSelect" class="gd-select">
-            <option value="all">Brand (All 8)</option>
+            <option value="all">Brand (All)</option>
             <option value="BRPL">Bangalore Refinery (BRPL)</option>
             <option value="MMTC-PAMP">MMTC-PAMP</option>
             <option value="Malabar">Malabar Gold</option>
@@ -61,7 +65,6 @@
             <option value="Mia by Tanishq">Mia by Tanishq</option>
             <option value="Joyalukkas">Joyalukkas</option>
             <option value="Kalyan">Kalyan Jewellers</option>
-            <option value="Muthoot">Muthoot Pappachan</option>
           </select>
 
           <select id="puritySelect" class="gd-select">
@@ -76,12 +79,6 @@
             <span class="toggle-track"></span>
             <span>Under 24K rate</span>
           </label>
-
-          <label class="gd-toggle-pill voucher-pill">
-            <input type="checkbox" id="autoStackToggle" checked>
-            <span class="toggle-track"></span>
-            <span>⚡ Include Gift Voucher + 5% SBI Cashback Stack</span>
-          </label>
         </div>
 
         <button type="button" class="clear-btn" id="clearAllBtn">Clear all</button>
@@ -90,23 +87,23 @@
       <div class="active-chips-row" id="activeChipsRow"></div>
     </section>
 
-    <!-- SMART AI RECOMMENDATION BANNER (BETTER THAN GOLDDEAL.IN) -->
+    <!-- SMART RECOMMENDATION BANNER -->
     <section id="smartRecBanner" class="rec-banner"></section>
 
     <p class="affiliate-note">
-      Automated Python Bot tracks direct ASIN / Myntra Style IDs. Clicking <strong>Buy →</strong> opens the <strong>exact product listing</strong> inside the store app.
+      Clicking <strong>Buy →</strong> opens the exact product listing inside Amazon, Myntra, AJIO, Flipkart, or Shopsy.
     </p>
 
-    <!-- GOLDDEALS DATA TABLE -->
+    <!-- GOLDDEALS DATA TABLE (MATCHING YOUR SCREENSHOT EXACTLY) -->
     <div class="table-scroll">
       <table class="gd-table">
         <thead>
           <tr>
-            <th>PRODUCT & CROSS-APP COMPARISON</th>
+            <th>PRODUCT</th>
             <th>STORE</th>
             <th>WEIGHT</th>
             <th>PURITY</th>
-            <th>PRICE (AFTER COUPONS & STACK)</th>
+            <th>PRICE (AFTER COUPONS)</th>
             <th>₹ / G</th>
             <th>₹ / G AT 24K PURITY</th>
             <th>VS MARKET</th>
@@ -118,12 +115,28 @@
     </div>
   </main>
 
-  <!-- ================= VIEW 2: AUTOMATED GROCERY SPLITTER ================= -->
+  <!-- ================= VIEW 2: GROCERY SPLITTER ================= -->
   <main id="groceryView" class="gd-main hidden">
-    <section id="grocRecBanner" class="rec-banner"></section>
+    <div class="groc-kpi-row">
+      <div class="groc-kpi">
+        <span>SMART SPLIT CART TOTAL</span>
+        <strong id="grocSplitTotal" style="color:#4ade80;">₹0</strong>
+        <small>Buying each item at cheapest store</small>
+      </div>
+      <div class="groc-kpi">
+        <span>SINGLE QUICK-COMMERCE CART</span>
+        <strong id="grocQuickTotal" style="color:#f87171;">₹0</strong>
+        <small>Blinkit / Zepto average</small>
+      </div>
+      <div class="groc-kpi">
+        <span>MONTHLY HOUSEHOLD SAVINGS</span>
+        <strong id="grocSaveTotal" style="color:#facc15;">₹0</strong>
+        <small>Saved every month</small>
+      </div>
+    </div>
     <div id="groceryTableContainer" class="table-scroll"></div>
   </main>
 
-  <script src="app.js?v=10"></script>
+  <script src="app.js?v=12"></script>
 </body>
 </html>
