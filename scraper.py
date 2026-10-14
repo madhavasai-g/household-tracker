@@ -12,6 +12,8 @@ HEADERS = {
     "Accept-Language": "en-IN,en;q=0.9"
 }
 
+KNOWN_GOLD_CODES = ["BLINKDEAL", "GOLD10", "DHANVARSHA", "AKSHAYA", "FESTIVEGOLD"]
+
 def fetch_live_spot_24k(fallback=14874):
     try:
         req = urllib.request.Request(
@@ -28,20 +30,38 @@ def fetch_live_spot_24k(fallback=14874):
         pass
     return fallback
 
-def try_scrape_live_product_price(url, expected_min, expected_max):
-    """Attempts to extract real selling price from product page JSON-LD or meta tags."""
+def scrape_product_price_and_verified_coupon(url, expected_min, expected_max):
+    """
+    Scrapes the product page for:
+    1. Live selling price
+    2. Verified active coupon code (ONLY returns a coupon if the product page explicitly lists it)
+    """
+    price_found = None
+    verified_code = None
+
     try:
         req = urllib.request.Request(url, headers=HEADERS)
         with urllib.request.urlopen(req, timeout=8) as resp:
             html = resp.read().decode("utf-8", errors="ignore")
-            matches = re.findall(r'"price"\s*:\s*"?(\d{4,7})"?', html)
+
+            # 1. Check for real price inside JSON-LD / hydration state
+            matches = re.findall(r'"(?:discountedPrice|sellingPrice|price)"\s*:\s*"?(\d{4,7})"?', html)
             for m in matches:
                 val = int(m)
                 if expected_min <= val <= expected_max:
-                    return val
+                    price_found = val
+                    break
+
+            # 2. Strictly verify if any known bullion coupon is LIVE on this specific product page
+            upper_html = html.upper()
+            for code in KNOWN_GOLD_CODES:
+                if f'"{code}"' in upper_html or f"'{code}'" in upper_html or f"CODE {code}" in upper_html:
+                    verified_code = code
+                    break
     except Exception:
         pass
-    return None
+
+    return price_found, verified_code
 
 def main():
     with open("deals.json", "r", encoding="utf-8") as f:
@@ -50,22 +70,13 @@ def main():
     spot24k = fetch_live_spot_24k(payload.get("spot24k", 14874))
     now_str = datetime.now(IST).strftime("%d %b, %I:%M %p IST")
 
-    store_markups = {
-        "Myntra": 1.088,
-        "Amazon": 1.094,
-        "AJIO": 1.092,
-        "Shopsy": 1.105,
-        "Flipkart": 1.108
-    }
-
     for deal in payload["deals"]:
         w = deal["weight"]
         store = deal["store"]
         purity_factor = min(float(deal["purity"]) / 999.0, 1.0)
         base_metal = spot24k * w * purity_factor
 
-        # Try live page scrape first (bounded by realistic gold price range)
-        scraped_price = try_scrape_live_product_price(
+        scraped_price, verified_coupon = scrape_product_price_and_verified_coupon(
             deal["directUrl"],
             expected_min=int(base_metal * 0.98),
             expected_max=int(base_metal * 1.25)
@@ -73,22 +84,15 @@ def main():
 
         if scraped_price:
             deal["listPrice"] = scraped_price
-        else:
-            markup = store_markups.get(store, 1.095)
-            deal["listPrice"] = round(base_metal * markup)
 
-        if store == "Myntra":
-            deal["couponDisc"] = round(deal["listPrice"] * 0.06)
-            deal["bankDisc"] = round(deal["listPrice"] * 0.075)
-        elif store == "AJIO":
+        # STRICT RULE: Never display a promo code unless verified live on the product page
+        if verified_coupon:
+            deal["liveCouponCode"] = verified_coupon
             deal["couponDisc"] = round(deal["listPrice"] * 0.05)
-            deal["bankDisc"] = round(deal["listPrice"] * 0.065)
-        elif store == "Amazon":
-            deal["bankDisc"] = round(1250 * w) if w <= 2 else round(deal["listPrice"] * 0.065)
-            deal["couponDisc"] = round(deal["listPrice"] * 0.03)
+            deal["bankOfferText"] = f"Verified Live Code: {verified_coupon} + Bank Offer"
         else:
-            deal["bankDisc"] = round(deal["listPrice"] * 0.065)
-            deal["couponDisc"] = deal["bankDisc"]
+            deal["liveCouponCode"] = None
+            deal["couponDisc"] = 0
 
         deal["updatedAt"] = now_str
 
