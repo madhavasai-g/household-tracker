@@ -1,6 +1,6 @@
 {
-  "spot24k": 14874,
-  "updatedAt": "15 Oct, 01:45 am IST",
+  "spot24k": 13646,
+  "updatedAt": "15 Oct, 01:51 AM IST",
   "deals": [
     {
       "id": 1,
@@ -13,8 +13,10 @@
       "bankOfferText": "with SBI / Axis Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-999-Purity-Goddess-Lakshmi-Gold-Coin-1-g/22810320/buy"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-999-Purity-Goddess-Lakshmi-Gold-Coin-1-g/22810320/buy",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 2,
@@ -27,8 +29,10 @@
       "bankOfferText": "with SBI credit card",
       "bankDisc": 0,
       "convFee": 69,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.amazon.in/s?k=PN+Gadgil+1g+Vedhani+Gold+Ring+24K"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.amazon.in/s?k=PN+Gadgil+1g+Vedhani+Gold+Ring+24K",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 3,
@@ -41,8 +45,10 @@
       "bankOfferText": "Instant Bank Card Offer at Payment",
       "bankDisc": 0,
       "convFee": 29,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.ajio.com/mmtc-pamp-1-5-gm-24k-999-9-gold-coin/p/6005363170_multi"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.ajio.com/mmtc-pamp-1-5-gm-24k-999-9-gold-coin/p/6005363170_multi",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 4,
@@ -55,8 +61,10 @@
       "bankOfferText": "with Flipkart Axis / SBI Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-9999-Purity-Gold-Bar--2-g/22810430/buy"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-9999-Purity-Gold-Bar--2-g/22810430/buy",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 5,
@@ -69,8 +77,10 @@
       "bankOfferText": "with SBI credit card",
       "bankDisc": 0,
       "convFee": 69,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.amazon.in/s?k=Joyalukkas+3g+24k+gold+coin"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.amazon.in/s?k=Joyalukkas+3g+24k+gold+coin",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 6,
@@ -83,8 +93,10 @@
       "bankOfferText": "Instant Bank Card Offer at Payment",
       "bankDisc": 0,
       "convFee": 29,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.ajio.com/muthoot-pappachan-5-gm-24k-999-yellow-gold-pappachan-swarnavarsham-coin/p/600724681"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.ajio.com/muthoot-pappachan-5-gm-24k-999-yellow-gold-pappachan-swarnavarsham-coin/p/600724681",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 7,
@@ -97,8 +109,10 @@
       "bankOfferText": "with Flipkart Axis / SBI Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-999-Purity-Gold-Coin--8-g/22810324/buy"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.myntra.com/Gold-Coin/BANGALORE+REFINERY/BANGALORE-REFINERY-24KT-999-Purity-Gold-Coin--8-g/22810324/buy",
+      "liveCouponCode": null,
+      "couponDisc": 0
     },
     {
       "id": 8,
@@ -111,8 +125,10 @@
       "bankOfferText": "with Flipkart Axis / SBI Credit Card",
       "bankDisc": 0,
       "convFee": 0,
-      "updatedAt": "15 Oct, 01:45 am IST",
-      "directUrl": "https://www.myntra.com/gold-coin/candere+a+kalyan+jewellers+company/candere-a-kalyan-jewellers-company-24kt-gold-coin---10-g/38648667/buy"
+      "updatedAt": "15 Oct, 01:51 AM IST",
+      "directUrl": "https://www.myntra.com/gold-coin/candere+a+kalyan+jewellers+company/candere-a-kalyan-jewellers-company-24kt-gold-coin---10-g/38648667/buy",
+      "liveCouponCode": null,
+      "couponDisc": 0
     }
   ]
 }
