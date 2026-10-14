@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Madhav's Gold & Grocery Smart Tracker</title>
+  <!-- Load Chart.js for smooth animated bar charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #1a73e8;
+      --primary-light: #e8f0fe;
+      --green: #137333;
+      --green-bg: #e6f4ea;
+      --amber: #b06000;
+      --amber-bg: #fef7e0;
+      --red: #c5221f;
+      --red-bg: #fce8e6;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; padding: 12px; background: var(--bg); color: var(--text); }
+    .app-shell { max-width: 860px; margin: 0 auto; }
+
+    /* Top App Header & Tab Navigation */
+    .top-bar {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 14px;
+    }
+    .app-title { margin: 0 0 4px 0; font-size: 20px; font-weight: 700; color: var(--primary); }
+    .app-sub { margin: 0 0 14px 0; font-size: 13px; color: var(--muted); }
+    .tab-row { display: flex; gap: 8px; }
+    .tab-btn {
+      flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--border);
+      background: #f9fafb; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--muted);
+    }
+    .tab-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* KPI Summary Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .kpi-card {
+      background: var(--card);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: var(--muted); font-weight: 600; }
+    .kpi-val { font-size: 20px; font-weight: 700; margin: 6px 0 4px 0; }
+    .kpi-sub { font-size: 12px; color: var(--muted); }
+    .badge {
+      display: inline-block; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    }
+    .badge-loot { background: var(--green-bg); color: var(--green); }
+    .badge-fair { background: var(--amber-bg); color: var(--amber); }
+    .badge-trap { background: var(--red-bg); color: var(--red); }
+
+    /* Panel Cards */
+    .panel {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .panel-title { margin: 0 0 12px 0; font-size: 15px; font-weight: 700; }
+
+    /* Pill Selectors */
+    .pill-group { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .pill {
+      padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border);
+      background: #f9fafb; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text);
+    }
+    .pill.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
+    /* Sliders */
+    .slider-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+    }
+    .slider-box { background: #f9fafb; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); }
+    .slider-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
+
+    /* Chart Container */
+    .chart-wrap { position: relative; height: 270px; width: 100%; }
+
+    /* Breakdown Table */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+    .right { text-align: right; }
+    .highlight-row { background: var(--green-bg); font-weight: 700; }
+
+    /* Grocery Specific */
+    .grocery-item {
+      border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px;
+    }
+    .grocery-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .qty-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+      background: #fff; font-weight: 700; cursor: pointer;
+    }
+    .store-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(95px, 1fr)); gap: 6px; margin-top: 8px;
+    }
+    .store-cell {
+      background: #f3f4f6; padding: 6px; border-radius: 6px; text-align: center; font-size: 11px;
+    }
+    .store-cell.best { background: var(--green-bg); border: 1px solid var(--green); color: var(--green); font-weight: 700; }
+    .store-input {
+      width: 60px; text-align: center; border: 1px solid #d1d5db; border-radius: 4px; padding: 2px; font-size: 12px; margin-top: 2px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="top-bar">
+    <h1 class="app-title">Household Smart Deal Dashboard</h1>
+    <p class="app-sub">Live 24K Gold Stack Simulator & Monthly Grocery Split Optimizer</p>
+    <div class="tab-row">
+      <button class="tab-btn active" id="tabGoldBtn" onclick="switchTab('gold')">🪙 24K Gold Deal Tracker</button>
+      <button class="tab-btn" id="tabGroceryBtn" onclick="switchTab('grocery')">🛒 Grocery Cart Splitter</button>
+    </div>
+  </div>
+
+  <!-- ================= TAB 1: GOLD DEAL STACK SIMULATOR ================= -->
+  <div id="goldSection">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Pure 24K Spot Value</div>
+        <div class="kpi-val" id="kpiSpotTotal">₹15,600</div>
+        <div class="kpi-sub" id="kpiSpotGram">₹7,800 / gram</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Stage 2: Voucher to Buy</div>
+        <div class="kpi-val" id="kpiVoucherFace" style="color: var(--primary);">₹15,905</div>
+        <div class="kpi-sub">Exact Gift Card face value</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Final Net Landed Cost</div>
+        <div class="kpi-val" id="kpiNetTotal" style="color: var(--green);">₹14,355</div>
+        <div class="kpi-sub" id="kpiNetGram">₹7,178 / gram</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Deal Verdict vs Spot</div>
+        <div class="kpi-val" id="kpiSavingsSpot">Saves ₹1,245</div>
+        <div id="kpiVerdictBadge"><span class="badge badge-loot">LOOT: BELOW SPOT</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">1. Select Platform Stack Preset & Coin Weight</h2>
+      <div class="pill-group" id="presetGroup">
+        <button class="pill active" onclick="setGoldPreset('myntra', this)">Myntra Stack (6% Coupon + 5% GV + 5% CC)</button>
+        <button class="pill" onclick="setGoldPreset('ajio', this)">Ajio Stack (4% Coupon + 6% GV + 5% CC)</button>
+        <button class="pill" onclick="setGoldPreset('amazon', this)">Amazon Stack (3% Coupon + 2% GV + 5% CC)</button>
+        <button class="pill" onclick="setGoldPreset('direct', this)">Direct Card Swipe (0% Cashback)</button>
+      </div>
+      <div class="pill-group" id="weightGroup">
+        <button class="pill" onclick="setGoldWeight(1, this)">1g Coin</button>
+        <button class="pill active" onclick="setGoldWeight(2, this)">2g Coin</button>
+        <button class="pill" onclick="setGoldWeight(5, this)">5g Coin</button>
+        <button class="pill" onclick="setGoldWeight(10, this)">10g Coin</button>
+      </div>
+
+      <div class="slider-grid">
+        <div class="slider-box">
+          <div class="slider-head"><span>24K Spot Rate / g</span><span id="lblSpot">₹7,800</span></div>
+          <input type="range" id="slSpot" min="6500" max="10500" step="50" value="7800" oninput="updateGold()" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span>App Markup over Spot</span><span id="lblMarkup">8.5%</span></div>
+          <input type="range" id="slMarkup" min="2" max="15" step="0.5" value="8.5" oninput="updateGold()" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span>Layer 1: App Coupon</span><span id="lblCoupon">6.0%</span></div>
+          <input type="range" id="slCoupon" min="0" max="12" step="0.5" value="6.0" oninput="updateGold()" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span>Layer 2: Gift Voucher Off</span><span id="lblVoucher">5.0%</span></div>
+          <input type="range" id="slVoucher" min="0" max="10" step="0.5" value="5.0" oninput="updateGold()" />
+        </div>
+        <div class="slider-box">
+          <div class="slider-head"><span>Layer 3: Card Cashback</span><span id="lblCard">5.0%</span></div>
+          <input type="range" id="slCard" min="0" max="5" step="0.5" value="5.0" oninput="updateGold()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">2. Live Step-Down Cost Comparison (₹)</h2>
+      <div class="chart-wrap">
+        <canvas id="goldChart"></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">3. Step-by-Step Checkout & Voucher Receipt</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stage in Workflow</th>
+              <th class="right">Total (₹)</th>
+              <th class="right">Rate / Gram</th>
+              <th class="right">Action / Savings</th>
+            </tr>
+          </thead>
+          <tbody id="goldReceiptBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TAB 2: GROCERY CART SPLITTER ================= -->
+  <div id="grocerySection" class="hidden">
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Smart Split Cart Total</div>
+        <div class="kpi-val" id="grocSplitTotal" style="color: var(--green);">₹0</div>
+        <div class="kpi-sub">Buying each item at lowest price</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Quick-Commerce Avg</div>
+        <div class="kpi-val" id="grocQuickTotal" style="color: var(--red);">₹0</div>
+        <div class="kpi-sub">Blinkit / Zepto single cart</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Monthly Grocery Savings</div>
+        <div class="kpi-val" id="grocSavings" style="color: var(--primary);">₹0</div>
+        <div class="kpi-sub">Tap any price box below to edit</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">Customize Monthly Quantities & Store Prices (Auto-Saved)</h2>
+      <div id="groceryListContainer"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let goldWeight = 2;
+  let goldChartInstance = null;
+
+  function formatINR(num) {
+    return "₹" + Math.round(num).toLocaleString("en-IN");
+  }
+
+  function switchTab(tab) {
+    document.getElementById("goldSection").classList.toggle("hidden", tab !== "gold");
+    document.getElementById("grocerySection").classList.toggle("hidden", tab !== "grocery");
+    document.getElementById("tabGoldBtn").classList.toggle("active", tab === "gold");
+    document.getElementById("tabGroceryBtn").classList.toggle("active", tab === "grocery");
+  }
+
+  function setGoldPreset(type, btn) {
+    document.querySelectorAll("#presetGroup .pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const presets = {
+      myntra: { markup: 8.5, coupon: 6.0, voucher: 5.0, card: 5.0 },
+      ajio:   { markup: 8.0, coupon: 4.0, voucher: 6.0, card: 5.0 },
+      amazon: { markup: 7.0, coupon: 3.0, voucher: 2.0, card: 5.0 },
+      direct: { markup: 8.0, coupon: 3.0, voucher: 0.0, card: 0.0 }
+    };
+    const p = presets[type];
+    document.getElementById("slMarkup").value = p.markup;
+    document.getElementById("slCoupon").value = p.coupon;
+    document.getElementById("slVoucher").value = p.voucher;
+    document.getElementById("slCard").value = p.card;
+    updateGold();
+  }
+
+  function setGoldWeight(w, btn) {
+    document.querySelectorAll("#weightGroup .pill").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    goldWeight = w;
+    updateGold();
+  }
+
+  function updateGold() {
+    const spotGram = parseFloat(document.getElementById("slSpot").value);
+    const markupPct = parseFloat(document.getElementById("slMarkup").value);
+    const couponPct = parseFloat(document.getElementById("slCoupon").value);
+    const voucherPct = parseFloat(document.getElementById("slVoucher").value);
+    const cardPct = parseFloat(document.getElementById("slCard").value);
+
+    document.getElementById("lblSpot").innerText = formatINR(spotGram);
+    document.getElementById("lblMarkup").innerText = markupPct.toFixed(1) + "%";
+    document.getElementById("lblCoupon").innerText = couponPct.toFixed(1) + "%";
+    document.getElementById("lblVoucher").innerText = voucherPct.toFixed(1) + "%";
+    document.getElementById("lblCard").innerText = cardPct.toFixed(1) + "%";
+
+    const spotTotal = spotGram * goldWeight;
+    const showroomTotal = spotTotal * 1.03 * 1.03; // 3% making + 3% GST
+    const listedApp = spotTotal * (1 + markupPct / 100);
+    const afterCoupon = listedApp * (1 - couponPct / 100);
+    const paidOnVoucherPortal = afterCoupon * (1 - voucherPct / 100);
+    const cardCashback = paidOnVoucherPortal * (cardPct / 100);
+    const finalNet = paidOnVoucherPortal - cardCashback;
+    const finalGram = finalNet / goldWeight;
+    const diffVsSpot = spotTotal - finalNet;
+
+    document.getElementById("kpiSpotTotal").innerText = formatINR(spotTotal);
+    document.getElementById("kpiSpotGram").innerText = formatINR(spotGram) + " / gram";
+    document.getElementById("kpiVoucherFace").innerText = formatINR(afterCoupon);
+    document.getElementById("kpiNetTotal").innerText = formatINR(finalNet);
+    document.getElementById("kpiNetGram").innerText = formatINR(finalGram) + " / gram";
+
+    const badgeEl = document.getElementById("kpiVerdictBadge");
+    if (diffVsSpot >= 0) {
+      document.getElementById("kpiSavingsSpot").innerText = "Saves " + formatINR(diffVsSpot) + " vs Spot";
+      badgeEl.innerHTML = '<span class="badge badge-loot">LOOT: BELOW SPOT RATE</span>';
+    } else if (finalNet <= showroomTotal) {
+      document.getElementById("kpiSavingsSpot").innerText = formatINR(Math.abs(diffVsSpot)) + " above Spot";
+      badgeEl.innerHTML = '<span class="badge badge-fair">FAIR: BEATS SHOWROOM</span>';
+    } else {
+      document.getElementById("kpiSavingsSpot").innerText = formatINR(Math.abs(diffVsSpot)) + " above Spot";
+      badgeEl.innerHTML = '<span class="badge badge-trap">OVERPRICED: SKIP DEAL</span>';
+    }
+
+    // Update Receipt Table
+    const rows = [
+      { name: "Offline Showroom (Spot + 3% Making + 3% GST)", total: showroomTotal, note: "Showroom Baseline" },
+      { name: "Stage 1: Listed App Price", total: listedApp, note: "+" + markupPct + "% over Spot" },
+      { name: "Stage 2: After App Coupon (Buy this GV amount)", total: afterCoupon, note: "-" + formatINR(listedApp - afterCoupon) },
+      { name: "Stage 3: Paid on Gift Voucher Portal", total: paidOnVoucherPortal, note: "-" + formatINR(afterCoupon - paidOnVoucherPortal) },
+      { name: "Stage 4: Final Net Cost (After Card Cashback)", total: finalNet, note: "-" + formatINR(cardCashback) + " CB", highlight: true },
+      { name: "Pure 24K (999) Spot Gold Benchmark", total: spotTotal, note: "Raw Metal Value" }
+    ];
+
+    const tbody = document.getElementById("goldReceiptBody");
+    tbody.innerHTML = rows.map(r => `
+      <tr class="${r.highlight ? 'highlight-row' : ''}">
+        <td>${r.name}</td>
+        <td class="right">${formatINR(r.total)}</td>
+        <td class="right">${formatINR(r.total / goldWeight)}/g</td>
+        <td class="right">${r.note}</td>
+      </tr>
+    `).join("");
+
+    // Update Chart.js
+    const chartData = [
+      Math.round(showroomTotal),
+      Math.round(listedApp),
+      Math.round(afterCoupon),
+      Math.round(paidOnVoucherPortal),
+      Math.round(finalNet),
+      Math.round(spotTotal)
+    ];
+
+    if (!goldChartInstance) {
+      const ctx = document.getElementById("goldChart").getContext("2d");
+      goldChartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Offline Showroom",
+            "1. Listed App Price",
+            "2. After App Coupon",
+            "3. After Gift Voucher",
+            "4. Final Net Cost",
+            "Pure 24K Spot Value"
+          ],
+          datasets: [{
+            label: "Total Cost (₹)",
+            data: chartData,
+            backgroundColor: ["#9ca3af", "#f59e0b", "#3b82f6", "#6366f1", "#16a34a", "#eab308"],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: "y",
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: false, ticks: { callback: v => "₹" + v.toLocaleString("en-IN") } }
+          }
+        }
+      });
+    } else {
+      goldChartInstance.data.datasets[0].data = chartData;
+      goldChartInstance.update();
+    }
+  }
+
+  // ================= GROCERY SPLITTER LOGIC =================
+  const defaultGroceries = [
+    { name: "Toor Dal Unpolished (1 kg)", qty: 2, prices: { DMart: 152, JioMart: 162, BigBasket: 175, Zepto: 186, Blinkit: 198 } },
+    { name: "Sona Masoori Rice (5 kg)", qty: 2, prices: { DMart: 305, JioMart: 320, BigBasket: 340, Zepto: 365, Blinkit: 380 } },
+    { name: "Whole Wheat Atta (5 kg)", qty: 1, prices: { DMart: 299, JioMart: 310, BigBasket: 318, Zepto: 320, Blinkit: 325 } },
+    { name: "Sunflower Cooking Oil (1 L)", qty: 3, prices: { DMart: 142, JioMart: 148, BigBasket: 150, Zepto: 152, Blinkit: 155 } },
+    { name: "Toned Milk (1 L pack)", qty: 15, prices: { DMart: 62, JioMart: 64, BigBasket: 66, Zepto: 66, Blinkit: 66 } },
+    { name: "Onions, Potatoes & Tomatoes (Weekly 3kg)", qty: 4, prices: { DMart: 128, JioMart: 132, BigBasket: 138, Zepto: 145, Blinkit: 158 } }
+  ];
+
+  let groceries = JSON.parse(localStorage.getItem("madhav_groceries")) || defaultGroceries;
+
+  function renderGroceries() {
+    localStorage.setItem("madhav_groceries", JSON.stringify(groceries));
+    const container = document.getElementById("groceryListContainer");
+    let splitTotal = 0;
+    let quickTotal = 0;
+
+    container.innerHTML = groceries.map((item, idx) => {
+      let minP = Infinity;
+      let bestStore = "";
+      for (const [store, p] of Object.entries(item.prices)) {
+        if (p < minP) { minP = p; bestStore = store; }
+      }
+      splitTotal += minP * item.qty;
+      quickTotal += item.prices.Blinkit * item.qty;
+
+      const storeCells = Object.entries(item.prices).map(([store, p]) => `
+        <div class="store-cell ${store === bestStore ? 'best' : ''}">
+          <div>${store}</div>
+          <input class="store-input" type="number" value="${p}" onchange="updateStorePrice(${idx}, '${store}', this.value)" />
+        </div>
+      `).join("");
+
+      return `
+        <div class="grocery-item">
+          <div class="grocery-top">
+            <div>
+              <strong>${item.name}</strong>
+              <span class="badge badge-loot" style="margin-left:6px;">Best: ${bestStore} (₹${minP})</span>
+            </div>
+            <div>
+              <button class="qty-btn" onclick="changeQty(${idx}, -1)">-</button>
+              <strong style="margin: 0 8px;">Qty: ${item.qty}</strong>
+              <button class="qty-bt
